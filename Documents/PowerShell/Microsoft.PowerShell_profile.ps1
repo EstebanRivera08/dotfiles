@@ -1,4 +1,16 @@
 # Make tab completion looks like unix
+# Check if PSREDLINE is installed
+if (-not (Get-PSResource -Name PSReadLine)){
+    # Install the PSResource if it's not installed
+    Write-Host "Instaling  PSReadLine resource..."
+    Install-PSResource -Name PSReadLine
+}
+
+Import-Module PSReadLine -Force
+
+Set-PSReadLineKeyHandler -Key Ctrl+p -Function HistorySearchBackward
+Set-PSReadLineKeyHandler -Key Ctrl+n -Function HistorySearchForward
+Set-PSReadlineKeyHandler -Key Shift+Tab -Function AcceptSuggestion 
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t'
 Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+r'
@@ -12,9 +24,7 @@ if (-not (Get-Module -Name Terminal-Icons -ListAvailable)) {
 # Import the module
 Import-Module -Name Terminal-Icons
 
-{{ if eq .chezmoi.username "DESKTOP-JH5KUE3\\Felipe" }}
-function cdrepos { set-location "D:\Felipe\Repos\" }
-{{ end }}
+
 
 $fzf_functions = Join-Path -Path $PSScriptRoot -ChildPath "FzFCustomFunctions.ps1"
 . $fzf_functions
