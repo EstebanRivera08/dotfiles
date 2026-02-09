@@ -37,4 +37,14 @@ choco install chezmoi
 ```
 choco install zoxide
 ```
- 
+# Install dotfile configuration with chezmoi
+```
+chezmoi init https://github.com/EstebanRivera08/dotfiles
+```
+Apply changes
+```
+chezmoi apply
+```
+
+
+
