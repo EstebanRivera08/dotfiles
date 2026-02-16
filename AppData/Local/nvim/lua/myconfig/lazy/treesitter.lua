@@ -12,7 +12,10 @@ return {
     sync_install = false,
     auto_install = false,
     indent = { enable = true },
-    highlight = { enable = true },
+    highlight = {
+      enable = true,
+      disable = { 'latex' }
+    },
     incremental_selection = {
       enable = true,
       keymaps = {
@@ -25,6 +28,6 @@ return {
   },
 
   config = function(_, opts)
-    require("nvim-treesitter.configs").setup(opts)
+    require("nvim-treesitter.config").setup(opts)
   end,
 }
