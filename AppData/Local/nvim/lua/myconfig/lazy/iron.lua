@@ -1,3 +1,37 @@
+local function get_venv_python()
+  local cwd = vim.fn.getcwd()
+
+  local candidates = {
+    cwd .. "\\.venv\\Scripts\\python.exe",
+    cwd .. "\\venv\\Scripts\\python.exe",
+    cwd .. "\\env\\Scripts\\python.exe",
+    cwd .. "/.venv/bin/python",
+    cwd .. "/venv/bin/python",
+    cwd .. "/env/bin/python",
+  }
+
+  for _, path in ipairs(candidates) do
+    if vim.fn.executable(path) == 1 then
+      return path
+    end
+  end
+
+  return nil
+end
+
+local function get_ipython_cmd()
+  local cwd = vim.fn.getcwd()
+  local python = get_venv_python()
+
+  if python then
+    -- Use venv python directly — all venv packages available, no uv needed
+    return { python, "-m", "IPython" }
+  end
+
+  -- Fallback: uv run with explicit project path so it finds the right venv
+  return { "uv", "run", "--project", cwd, "--with", "ipython", "python", "-m", "IPython" }
+end
+
 return {
   "Vigemus/iron.nvim",
 
@@ -19,8 +53,11 @@ return {
             end,
             format = require("iron.fts.common").bracketed_paste_python,
           },
+
           python = {
-            command = { "uv", "run", "--with", "ipython", "ipython", "--no-autoindent" },
+            command = function()
+              return get_ipython_cmd()
+            end,
             format = require("iron.fts.common").bracketed_paste_python,
             block_deviders = { "# %%", "#%%" },
           },
