@@ -20,17 +20,19 @@ local function get_venv_python()
 end
 
 local function get_ipython_cmd()
-  local cwd = vim.fn.getcwd()
   local python = get_venv_python()
 
   if python then
-    -- Use venv python directly — all venv packages available, no uv needed
+    -- Use venv python directly — all venv packages available
     return { python, "-m", "IPython" }
   end
 
-  -- Fallback: uv run with explicit project path so it finds the right venv
-  return { "uv", "run", "--project", cwd, "--with", "ipython", "python", "-m", "IPython" }
+  -- Fallback: use uv to provide IPython
+  return { "uv", "run", "--with", "ipython", "ipython", "--no-autoindent" }
 end
+
+
+
 
 return {
   "Vigemus/iron.nvim",
